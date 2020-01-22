@@ -1,15 +1,15 @@
 pragma solidity ^0.5.0;
 
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-import './IScatter.sol';
+import './Scatter.sol';
 
 contract Unscatter {
   address private _owner;
-  IScatter private _scatter;
+  SCATTER private _scatter;
 
-  constructor (address scatter) public {
+  constructor (address payable scatter) public {
     _owner = msg.sender;
-    _scatter = IScatter(scatter);
+    _scatter = SCATTER(scatter);
   }
 
   function withdraw (address token) external {
