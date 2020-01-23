@@ -65,8 +65,17 @@ contract('Unscatter', function (accounts) {
 
     it('executes call with large dataset', async function () {
       await truffleAssert.passes(
-        instance.scatter(DATA.slice(0, 200), { from: OWNER })
+        instance.scatter(DATA.slice(0, 140), { from: OWNER })
       );
+    });
+
+    describe('reverts if', function () {
+      it('sender is not owner', async function () {
+        await truffleAssert.reverts(
+          instance.scatter(RECIPIENTS, { from: NOBODY }),
+          'Unscatter: sender must be owner'
+        );
+      });
     });
   });
 

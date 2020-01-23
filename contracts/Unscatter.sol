@@ -7,17 +7,21 @@ contract Unscatter {
   address private _owner;
   SCATTER private _scatter;
 
+  modifier onlyOwner {
+    require(msg.sender == _owner, 'Unscatter: sender must be owner');
+    _;
+  }
+
   constructor (address payable scatter) public {
     _owner = msg.sender;
     _scatter = SCATTER(scatter);
   }
 
-  function withdraw (address token) external {
-    require(msg.sender == _owner, 'Unscatter: sender must be owner');
+  function withdraw (address token) external onlyOwner {
     IERC20(token).transfer(_owner, IERC20(token).balanceOf(address(this)));
   }
 
-  function scatter (address[] calldata targets) external {
+  function scatter (address[] calldata targets) external onlyOwner {
     for (uint i = 0; i < targets.length; i++) {
       _scatter.transfer(targets[i], 1e18);
     }
