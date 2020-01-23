@@ -11,11 +11,14 @@ contract('Unscatter', function (accounts) {
   const INACTIVE = RECIPIENTS[0] = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
   const INFECTED = RECIPIENTS[1];
 
+  const DATA = require('../data/data.js');
+
   let scatter;
   let instance;
 
   before(async function () {
     assert(RECIPIENTS.length >= 3);
+    assert(DATA.length > 1000, 'JSON address array must be placed in data/addresses/');
   });
 
   beforeEach(async function () {
@@ -59,6 +62,12 @@ contract('Unscatter', function (accounts) {
         assert((await scatter.balanceOf.call(RECIPIENTS[i])).eq(await expectedBalances[i]));
       }
     });
+
+    it('executes call with large dataset', async function () {
+      await truffleAssert.passes(
+        instance.scatter(DATA.slice(0, 200), { from: OWNER })
+      );
+    });
   });
 
   describe('#filter', function () {
@@ -67,6 +76,12 @@ contract('Unscatter', function (accounts) {
       assert(web3.utils.toBN(filtered[0]).isZero());
       assert(web3.utils.toBN(filtered[1]).isZero());
       assert.equal(filtered.reduce((acc, el) => acc + !web3.utils.toBN(el).isZero(), 0), RECIPIENTS.length - 2);
+    });
+
+    it('executes call with large dataset', async function () {
+      await truffleAssert.passes(
+        instance.filter.call(DATA.slice(0, 1500))
+      );
     });
   });
 });

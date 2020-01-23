@@ -12,6 +12,16 @@ module.exports = {
     'Atomics': 'readonly',
     'SharedArrayBuffer': 'readonly',
     'process': 'readonly',
+    'web3': 'readonly',
+    'artifacts': 'readonly',
+    'contract': 'readonly',
+    'describe': 'readonly',
+    'it': 'readonly',
+    'before': 'readonly',
+    'beforeEach': 'readonly',
+    'assert': 'readonly',
+    'usePlugin': 'readonly',
+    '__dirname': 'readonly'
   },
   'parserOptions': {
     'ecmaVersion': 2018,

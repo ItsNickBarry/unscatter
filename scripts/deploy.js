@@ -3,7 +3,7 @@ async function main() {
 
   const Unscatter = artifacts.require('Unscatter');
 
-  const instance = await SNXArb.new(SCATTER);
+  const instance = await Unscatter.new(SCATTER);
   console.log(`Unscatter deployed to ${ instance.address }`);
 }
 
