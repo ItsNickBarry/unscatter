@@ -6,14 +6,18 @@ async function main() {
   const DATA = require('../data/filtered.json');
 
   let chunkSize = 25;
-  let gas = '3000000';
-  let gasPrice = '2000000000';
+  let gas = parseInt(chunkSize * 3e6 / 25).toString();
+  let gasPrice = '1010000000';
 
   console.log(`scattering ${ DATA.length } addresses`);
 
   for (let i = 0; i < DATA.length; i += chunkSize) {
-    console.log(`index ${ i } / ${ DATA.length }`);
-    await instance.scatter(DATA.slice(i, i + chunkSize), { gasPrice, gas });
+    try {
+      console.log(`index ${ i } / ${ DATA.length }`);
+      await instance.scatter(DATA.slice(i, i + chunkSize), { gasPrice, gas });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   console.log(`scattered ${ DATA.length } addresses`);

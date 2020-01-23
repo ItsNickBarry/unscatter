@@ -5,7 +5,7 @@ async function main() {
 
   const instance = await Unscatter.at('0x2BF82404Ce47333798e9933abfAfC39075905857');
 
-  const DATA = require('../data/data.js').slice(0, 2500);
+  const DATA = require('../data/data.js');
 
   let result = [];
 
