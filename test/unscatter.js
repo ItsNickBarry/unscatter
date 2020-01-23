@@ -32,6 +32,21 @@ contract('Unscatter', function (accounts) {
     await scatter.transfer(instance.address, await scatter.balanceOf.call(NOBODY), { from: NOBODY });
   });
 
+  describe('fallback function', function () {
+    it('accepts ether', async function () {
+      let initialBalance = web3.utils.toBN(await web3.eth.getBalance(instance.address));
+      let deltaBalance = web3.utils.toBN(1);
+
+      await truffleAssert.passes(
+        instance.send('', { value: deltaBalance })
+      );
+
+      let finalBalance = web3.utils.toBN(await web3.eth.getBalance(instance.address));
+
+      assert(initialBalance.add(deltaBalance).eq(finalBalance));
+    });
+  });
+
   describe('#withdraw', function () {
     it('transfers tokens to owner', async function () {
       let initialBalance = await scatter.balanceOf.call(OWNER);
@@ -46,6 +61,19 @@ contract('Unscatter', function (accounts) {
       it('sender is not owner', async function () {
         await truffleAssert.reverts(
           instance.withdraw(scatter.address, { from: NOBODY }),
+          'Unscatter: sender must be owner'
+        );
+      });
+    });
+  });
+
+  describe('#withdrawEther', function () {
+    it('transfers ether to owner');
+
+    describe('reverts if', function () {
+      it('sender is not owner', async function () {
+        await truffleAssert.reverts(
+          instance.withdrawEther({ from: NOBODY }),
           'Unscatter: sender must be owner'
         );
       });

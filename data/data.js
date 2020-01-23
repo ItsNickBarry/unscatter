@@ -5,8 +5,8 @@ let dataset = [];
 
 let addressesDirectory = path.join(__dirname, 'addresses');
 
-fs.readdir(addressesDirectory, function (error, data) {
-  data.filter(el => el.endsWith('.json')).forEach(el => dataset.push(...require(path.join(addressesDirectory, el))));
+fs.readdirSync(addressesDirectory).filter(el => el.endsWith('.json')).forEach(function (el) {
+  dataset.push(...JSON.parse(fs.readFileSync(path.join(addressesDirectory, el), 'utf8')));
 });
 
 module.exports = dataset;
