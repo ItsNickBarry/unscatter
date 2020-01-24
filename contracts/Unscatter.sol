@@ -17,14 +17,8 @@ contract Unscatter {
     _scatter = SCATTER(scatter);
   }
 
-  function () external payable {}
-
   function withdraw (address token) external onlyOwner {
     IERC20(token).transfer(_owner, IERC20(token).balanceOf(address(this)));
-  }
-
-  function withdrawEther () external onlyOwner {
-    _owner.transfer(address(this).balance);
   }
 
   function scatter (address[] calldata targets) external onlyOwner {
