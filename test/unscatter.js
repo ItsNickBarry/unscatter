@@ -13,12 +13,19 @@ contract('Unscatter', function (accounts) {
 
   const DATA = require('../data/data.js');
 
+  const SCATTER_SIZE = 50;
+  const FILTER_SIZE = 1500;
+
   let scatter;
   let instance;
 
   before(async function () {
     assert(RECIPIENTS.length >= 3);
     assert(DATA.length > 1000, 'JSON address array must be placed in data/addresses/');
+
+    for (let i = 0; i < SCATTER_SIZE; i++) {
+      await web3.eth.sendTransaction({ to: DATA[i], from: NOBODY, value: 1 });
+    }
   });
 
   beforeEach(async function () {
@@ -93,7 +100,19 @@ contract('Unscatter', function (accounts) {
 
     it('executes call with large dataset', async function () {
       await truffleAssert.passes(
-        instance.scatter(DATA.slice(0, 140), { from: OWNER })
+        instance.scatter(DATA.slice(0, SCATTER_SIZE), { from: OWNER })
+      );
+    });
+
+    it('executes call with transfers to self', async function () {
+      let data = [];
+
+      for (let i = 0; i < SCATTER_SIZE; i++) {
+        data[i] = instance.address;
+      }
+
+      await truffleAssert.passes(
+        instance.scatter(data, { from: OWNER })
       );
     });
 
@@ -117,8 +136,18 @@ contract('Unscatter', function (accounts) {
 
     it('executes call with large dataset', async function () {
       await truffleAssert.passes(
-        instance.filter.call(DATA.slice(0, 1500))
+        instance.filter.call(DATA.slice(0, FILTER_SIZE))
       );
+    });
+  });
+
+  describe('#poolShares', function () {
+    it('returns number of reward pool slots held by the contract', async function () {
+      assert.equal(await instance.poolShares.call(), 0);
+
+      await instance.scatter(DATA.slice(0, 5), { from: OWNER });
+
+      assert.equal(await instance.poolShares.call(), 5);
     });
   });
 });

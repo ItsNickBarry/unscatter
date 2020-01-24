@@ -44,4 +44,16 @@ contract Unscatter {
 
     return validTargets;
   }
+
+  function poolShares () external view returns (uint) {
+    uint shares = 0;
+
+    for (uint i = 0; i < 256; i++) {
+      if (_scatter.rewardlist(i) == address(this)) {
+        shares++;
+      }
+    }
+
+    return shares;
+  }
 }
