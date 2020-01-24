@@ -3,7 +3,7 @@ const fs = require('fs');
 async function main() {
   const Unscatter = artifacts.require('Unscatter');
 
-  const instance = await Unscatter.at('0x2BF82404Ce47333798e9933abfAfC39075905857');
+  const instance = await Unscatter.at('0x2e5C4A6b25682de9Fa0C0673C72F341dE210D040');
 
   const DATA = require('../data/data.js');
 

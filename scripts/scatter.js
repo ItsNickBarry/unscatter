@@ -1,26 +1,48 @@
+const Unscatter = artifacts.require('Unscatter');
+
+const DATA = require('../data/filtered.json');
+
 async function main() {
-  const Unscatter = artifacts.require('Unscatter');
+  const instance = await Unscatter.at('0x2e5C4A6b25682de9Fa0C0673C72F341dE210D040');
 
-  const instance = await Unscatter.at('0x2BF82404Ce47333798e9933abfAfC39075905857');
+  let gas = '5000000';
+  let gasPrice = '2010000000';
 
-  const DATA = require('../data/filtered.json');
 
-  let chunkSize = 25;
-  let gas = parseInt(chunkSize * 3e6 / 25).toString();
-  let gasPrice = '1010000000';
+  let i = 0;
 
-  console.log(`scattering ${ DATA.length } addresses`);
+  while (i < DATA.length) {
+    console.log(`index ${ i } / ${ DATA.length }`);
 
-  for (let i = 0; i < DATA.length; i += chunkSize) {
+    let head, tail;
+
     try {
-      console.log(`index ${ i } / ${ DATA.length }`);
-      await instance.scatter(DATA.slice(i, i + chunkSize), { gasPrice, gas });
+      let shares = await instance.poolShares.call();
+      console.log(`shares: ${ shares }`);
+
+      if (shares < 128) {
+        head = 25;
+        tail = 0;
+      } else if (shares < 250) {
+        head = 25;
+        tail = 25;
+      } else {
+        head = 0;
+        tail = 100;
+      }
+
+      let data = DATA.slice(i, i + head);
+      for (let j = 0; i < tail; j++) {
+        data.push(instance.address);
+      }
+
+      await instance.scatter(data, { gasPrice, gas });
     } catch (e) {
       console.log(e);
+    } finally {
+      i += head;
     }
   }
-
-  console.log(`scattered ${ DATA.length } addresses`);
 }
 
 main()
