@@ -27,6 +27,22 @@ contract Unscatter {
     }
   }
 
+  function mint (uint count) external {
+    uint initialBalance = _scatter.balanceOf(address(this));
+
+    for (uint i = 0; i < count; i++) {
+      _scatter.transfer(address(this), 1e18);
+    }
+
+    uint finalBalance = _scatter.balanceOf(address(this));
+
+    if (finalBalance > initialBalance) {
+      uint reward = (finalBalance - initialBalance) / 2;
+      _scatter.transfer(msg.sender, reward);
+      _scatter.transfer(_owner, reward);
+    }
+  }
+
   function filter (address[] calldata targets) external view returns (address[] memory) {
     address[] memory validTargets = new address[](targets.length);
 

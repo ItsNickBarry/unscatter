@@ -5,9 +5,10 @@ const Scatter = artifacts.require('SCATTER');
 
 contract('Unscatter', function (accounts) {
   const OWNER = accounts[0];
-  const NOBODY = accounts[1];
+  const SCATTER_OWNER = accounts[1];
+  const NOBODY = accounts[2];
 
-  const RECIPIENTS = accounts.slice(2);
+  const RECIPIENTS = accounts.slice(3);
   const INACTIVE = RECIPIENTS[0] = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
   const INFECTED = RECIPIENTS[1];
 
@@ -24,19 +25,19 @@ contract('Unscatter', function (accounts) {
     assert(DATA.length > 1000, 'JSON address array must be placed in data/addresses/');
 
     for (let i = 0; i < SCATTER_SIZE; i++) {
-      await web3.eth.sendTransaction({ to: DATA[i], from: NOBODY, value: 1 });
+      await web3.eth.sendTransaction({ to: DATA[i], from: SCATTER_OWNER, value: 1 });
     }
   });
 
   beforeEach(async function () {
-    scatter = await Scatter.new({ from: NOBODY });
+    scatter = await Scatter.new({ from: SCATTER_OWNER });
     instance = await Unscatter.new(scatter.address, { from: OWNER });
 
     // infect address
-    await scatter.transfer(INFECTED, web3.utils.toBN(1e18), { from: NOBODY });
+    await scatter.transfer(INFECTED, web3.utils.toBN(1e18), { from: SCATTER_OWNER });
 
     // transfer remaining Scatter tokens to Unscatter instance
-    await scatter.transfer(instance.address, await scatter.balanceOf.call(NOBODY), { from: NOBODY });
+    await scatter.transfer(instance.address, await scatter.balanceOf.call(SCATTER_OWNER), { from: SCATTER_OWNER });
   });
 
   describe('#withdraw', function () {
@@ -95,6 +96,26 @@ contract('Unscatter', function (accounts) {
           'Unscatter: sender must be owner'
         );
       });
+    });
+  });
+
+  describe('#mint', function () {
+    it('is tested', async function () {
+      await Promise.all([1, 2, 3, 4, 5, 6, 7, 8].map(i => instance.scatter(DATA.slice(i * 32, (i + 1) * 32), { from: OWNER })));
+
+      let initialBalanceMinter = await scatter.balanceOf.call(NOBODY);
+      let initialBalanceOwner = await scatter.balanceOf.call(OWNER);
+
+      await instance.mint(100, { from: NOBODY });
+
+      let finalBalanceMinter = await scatter.balanceOf.call(NOBODY);
+      let finalBalanceOwner = await scatter.balanceOf.call(OWNER);
+
+      let deltaBalanceMinter = finalBalanceMinter.sub(initialBalanceMinter);
+      let deltaBalanceOwner = finalBalanceOwner.sub(initialBalanceOwner);
+
+      assert(deltaBalanceMinter.eq(deltaBalanceOwner));
+      assert(!deltaBalanceMinter.isZero());
     });
   });
 
