@@ -17,16 +17,28 @@ contract Unscatter {
     _scatter = SCATTER(scatter);
   }
 
+  /**
+   * @notice remove ERC20 tokens (STT) from contract
+   * @param token address of ERC20 token
+   */
   function withdraw (address token) external onlyOwner {
     IERC20(token).transfer(_owner, IERC20(token).balanceOf(address(this)));
   }
 
+  /**
+   * @notice transfer to a given list of pre-filtered targets
+   * @param targets list of target addresses
+   */
   function scatter (address[] calldata targets) external onlyOwner {
     for (uint i = 0; i < targets.length; i++) {
       _scatter.transfer(targets[i], 1e18);
     }
   }
 
+  /**
+   * @notice transfer to self a given number of times, minting for current members of the reward pool
+   * @param count number of transfers to execute
+   */
   function mint (uint count) external {
     uint initialBalance = _scatter.balanceOf(address(this));
 
@@ -43,6 +55,11 @@ contract Unscatter {
     }
   }
 
+  /**
+   * @notice filter a list of targets for ether balance and STT infection status
+   * @param targets list of target addresses to filter
+   * @return address[] list of passed addresses with ineligible members replaced with zero address
+   */
   function filter (address[] calldata targets) external view returns (address[] memory) {
     address[] memory validTargets = new address[](targets.length);
 
@@ -55,6 +72,10 @@ contract Unscatter {
     return validTargets;
   }
 
+  /**
+   * @notice get number of STT pool shares held by current contract
+   * @return uint number of pool shares
+   */
   function poolShares () external view returns (uint) {
     uint shares = 0;
 
