@@ -8,6 +8,16 @@ This repository was generated from a template or is the template itself.  For mo
 
 Usage of this contract to mint Scatter Token requires a sizable list of addresses, each of which has a non-zero ether balance and has never held STT.  A suggested approach to generating such a list is to download the list of holders of an extablished token from [Etherscan](https://etherscan.io/tokens?sort=holders&order=desc).  This list should then be converted to a JSON array containing only addresses and saved in the `data/addresses` directory under any filename(s) with a `.json` extension.
 
+### Deployment
+
+Deploy the contract:
+
+```bash
+MNEMONIC="[MNEMONIC]" URL="https://mainnet.infura.io/v3/[INFURA_KEY]" npx buidler run scripts/deploy.js --no-compile --network generic
+```
+
+Update the contents of `data/deployed.json` to reflect the address of the new deployment.
+
 ### Filtering
 
 To filter a prepared list of addresses:
@@ -26,7 +36,17 @@ To distribute tokens to a filtered list of addresses:
 MNEMONIC="[MNEMONIC]" URL="https://mainnet.infura.io/v3/[INFURA_KEY]" GAS_PRICE="1e9" npx buidler run scripts/scatter.js --no-compile --network generic
 ```
 
+This script requires that the contract holds a balance of STT (~256 recommended).
+
 The contract will execute transfers to itself if the contract's share of the reward pool is sufficient.
+
+### Withdrawing
+
+To withdraw STT from the contract:
+
+```bash
+MNEMONIC="[MNEMONIC]" URL="https://mainnet.infura.io/v3/[INFURA_KEY]" npx buidler run scripts/withdraw.js --no-compile --network generic
+```
 
 ## Setup
 
