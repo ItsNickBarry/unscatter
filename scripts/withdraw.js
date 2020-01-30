@@ -1,7 +1,9 @@
-async function main() {
-  const Unscatter = artifacts.require('Unscatter');
+const Unscatter = artifacts.require('Unscatter');
 
-  const instance = await Unscatter.at('0x2e5C4A6b25682de9Fa0C0673C72F341dE210D040');
+const UNSCATTER = require('../data/deployed.json').unscatter;
+
+async function main() {
+  const instance = await Unscatter.at(UNSCATTER);
 
   await instance.withdraw('0xaC9Bb427953aC7FDDC562ADcA86CF42D988047Fd', { gas: '1000000' });
 }

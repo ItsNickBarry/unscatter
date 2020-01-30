@@ -1,11 +1,13 @@
 const fs = require('fs');
 
+const Unscatter = artifacts.require('Unscatter');
+
+const DATA = require('../data/data.js');
+
+const UNSCATTER = require('../data/deployed.json').unscatter;
+
 async function main() {
-  const Unscatter = artifacts.require('Unscatter');
-
-  const instance = await Unscatter.at('0x2e5C4A6b25682de9Fa0C0673C72F341dE210D040');
-
-  const DATA = require('../data/data.js');
+  const instance = await Unscatter.at(UNSCATTER);
 
   let result = [];
 

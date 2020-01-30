@@ -2,8 +2,10 @@ const Unscatter = artifacts.require('Unscatter');
 
 const DATA = require('../data/filtered.json');
 
+const UNSCATTER = require('../data/deployed.json').unscatter;
+
 async function main() {
-  const instance = await Unscatter.at('0x2e5C4A6b25682de9Fa0C0673C72F341dE210D040');
+  const instance = await Unscatter.at(UNSCATTER);
 
   let gas = '5000000';
 
