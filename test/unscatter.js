@@ -14,7 +14,7 @@ contract('Unscatter', function (accounts) {
 
   const DATA = require('../data/data.js');
 
-  const SCATTER_SIZE = 50;
+  const SCATTER_SIZE = 64;
   const FILTER_SIZE = 1500;
 
   let scatter;
@@ -100,22 +100,32 @@ contract('Unscatter', function (accounts) {
   });
 
   describe('#mint', function () {
-    it('is tested', async function () {
+    it('rewards sender and owner equally', async function () {
       await Promise.all([1, 2, 3, 4, 5, 6, 7, 8].map(i => instance.scatter(DATA.slice(i * 32, (i + 1) * 32), { from: OWNER })));
 
+      let initialBalanceContract = await scatter.balanceOf.call(instance.address);
       let initialBalanceMinter = await scatter.balanceOf.call(NOBODY);
       let initialBalanceOwner = await scatter.balanceOf.call(OWNER);
 
-      await instance.mint(100, { from: NOBODY });
+      await instance.mint(1, { from: NOBODY });
 
+      let finalBalanceContract = await scatter.balanceOf.call(instance.address);
       let finalBalanceMinter = await scatter.balanceOf.call(NOBODY);
       let finalBalanceOwner = await scatter.balanceOf.call(OWNER);
 
+      let deltaBalanceContract = finalBalanceContract.sub(initialBalanceContract);
       let deltaBalanceMinter = finalBalanceMinter.sub(initialBalanceMinter);
       let deltaBalanceOwner = finalBalanceOwner.sub(initialBalanceOwner);
 
+      assert(!deltaBalanceContract.isNeg());
       assert(deltaBalanceMinter.eq(deltaBalanceOwner));
       assert(!deltaBalanceMinter.isZero());
+    });
+
+    it('accepts large input transaction count', async function () {
+      await truffleAssert.passes(
+        instance.mint(200)
+      );
     });
   });
 

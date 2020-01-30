@@ -25,15 +25,14 @@ async function main() {
       console.log(`shares: ${ shares }`);
 
       if (shares < 128) {
-        head = 50;
+        head = 64;
         tail = 0;
       } else if (shares < 240) {
-        head = 50;
+        head = 64;
         tail = 25;
       } else {
         head = 0;
-        tail = 100;
-        gasPrice += 0.5e9; // 0.5 gwei
+        tail = 200;
       }
 
       let data = DATA.slice(i, i + head);
