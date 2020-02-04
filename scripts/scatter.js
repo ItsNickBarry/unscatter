@@ -34,7 +34,7 @@ async function main() {
         tail = 25;
       } else {
         head = 0;
-        tail = 200;
+        tail = 256;
       }
 
       let data = DATA.slice(i, i + head);
