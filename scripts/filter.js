@@ -23,6 +23,8 @@ async function main() {
     result.push(...filtered);
   }
 
+  result = [...new Set(result)];
+
   console.log(`filtered ${ result.length } addresses`);
   fs.writeFileSync('data/filtered.json', JSON.stringify(result));
   console.log('wrote data to data/filtered.json');
