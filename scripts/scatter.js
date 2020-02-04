@@ -7,7 +7,7 @@ const UNSCATTER = require('../data/deployed.json').unscatter;
 async function main() {
   const instance = await Unscatter.at(UNSCATTER);
 
-  let gas = '5000000';
+  let gas = '7500000';
 
   let i = 0;
 
