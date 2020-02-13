@@ -61,10 +61,11 @@ contract('Unscatter', function (accounts) {
   });
 
   describe('#scatter', function () {
-    it('transfers 1e18 units of Scatter token to recipients', async function () {
-      let expectedBalances = RECIPIENTS.map(async (a) => (await scatter.balanceOf.call(a)).add(web3.utils.toBN(1e18)));
+    it('transfers given quantity Scatter token to recipients', async function () {
+      let amount = web3.utils.toBN(2e18);
+      let expectedBalances = RECIPIENTS.map(async (a) => (await scatter.balanceOf.call(a)).add(amount));
 
-      await instance.scatter(RECIPIENTS, { from: OWNER });
+      await instance.scatter(RECIPIENTS, amount, { from: OWNER });
 
       for (let i = 0; i < RECIPIENTS.length; i++) {
         assert((await scatter.balanceOf.call(RECIPIENTS[i])).eq(await expectedBalances[i]));
@@ -73,7 +74,7 @@ contract('Unscatter', function (accounts) {
 
     it('executes call with large dataset', async function () {
       await truffleAssert.passes(
-        instance.scatter(DATA.slice(0, SCATTER_SIZE), { from: OWNER })
+        instance.scatter(DATA.slice(0, SCATTER_SIZE), web3.utils.toWei('2'), { from: OWNER })
       );
     });
 
@@ -85,14 +86,14 @@ contract('Unscatter', function (accounts) {
       }
 
       await truffleAssert.passes(
-        instance.scatter(data, { from: OWNER })
+        instance.scatter(data, web3.utils.toWei('2'), { from: OWNER })
       );
     });
 
     describe('reverts if', function () {
       it('sender is not owner', async function () {
         await truffleAssert.reverts(
-          instance.scatter(RECIPIENTS, { from: NOBODY }),
+          instance.scatter(RECIPIENTS, web3.utils.toWei('2'), { from: NOBODY }),
           'Unscatter: sender must be owner'
         );
       });
@@ -101,7 +102,7 @@ contract('Unscatter', function (accounts) {
 
   describe('#mint', function () {
     it('rewards sender and owner equally', async function () {
-      await Promise.all([1, 2, 3, 4, 5, 6, 7, 8].map(i => instance.scatter(DATA.slice(i * 32, (i + 1) * 32), { from: OWNER })));
+      await Promise.all([1, 2, 3, 4, 5, 6, 7, 8].map(i => instance.scatter(DATA.slice(i * 32, (i + 1) * 32), web3.utils.toWei('2'), { from: OWNER })));
 
       let initialBalanceContract = await scatter.balanceOf.call(instance.address);
       let initialBalanceMinter = await scatter.balanceOf.call(NOBODY);
@@ -148,7 +149,7 @@ contract('Unscatter', function (accounts) {
     it('returns number of reward pool slots held by the contract', async function () {
       assert.equal(await instance.poolShares.call(), 0);
 
-      await instance.scatter(DATA.slice(0, 5), { from: OWNER });
+      await instance.scatter(DATA.slice(0, 5), web3.utils.toWei('2'), { from: OWNER });
 
       assert.equal(await instance.poolShares.call(), 5);
     });

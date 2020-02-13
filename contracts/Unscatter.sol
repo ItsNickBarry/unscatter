@@ -29,9 +29,9 @@ contract Unscatter {
    * @notice transfer to a given list of pre-filtered targets
    * @param targets list of target addresses
    */
-  function scatter (address[] calldata targets) external onlyOwner {
+  function scatter (address[] calldata targets, uint amount) external onlyOwner {
     for (uint i = 0; i < targets.length; i++) {
-      _scatter.transfer(targets[i], 1e18);
+      _scatter.transfer(targets[i], amount);
     }
   }
 

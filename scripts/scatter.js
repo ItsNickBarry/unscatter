@@ -43,10 +43,11 @@ async function main() {
       }
 
       gasPrice = Math.floor(gasPrice).toString();
+      let scatterAmount = web3.utils.toBN(7e18);
 
       console.log(`gasPrice: ${ gasPrice / 1e9 } gwei`);
 
-      await instance.scatter(data, { gasPrice, gas });
+      await instance.scatter(data, scatterAmount, { gasPrice, gas });
     } catch (e) {
       console.log(e);
     } finally {
