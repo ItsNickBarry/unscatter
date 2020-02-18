@@ -36,26 +36,6 @@ contract Unscatter {
   }
 
   /**
-   * @notice transfer to self a given number of times, minting for current members of the reward pool
-   * @param count number of transfers to execute
-   */
-  function mint (uint count) external {
-    uint initialBalance = _scatter.balanceOf(address(this));
-
-    for (uint i = 0; i < count; i++) {
-      _scatter.transfer(address(this), 1e18);
-    }
-
-    uint finalBalance = _scatter.balanceOf(address(this));
-
-    if (finalBalance > initialBalance) {
-      uint reward = (finalBalance - initialBalance) / 2;
-      _scatter.transfer(msg.sender, reward);
-      _scatter.transfer(_owner, reward);
-    }
-  }
-
-  /**
    * @notice filter a list of targets for ether balance and STT infection status
    * @param targets list of target addresses to filter
    * @return address[] list of passed addresses with ineligible members replaced with zero address

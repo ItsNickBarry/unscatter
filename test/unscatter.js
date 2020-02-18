@@ -100,36 +100,6 @@ contract('Unscatter', function (accounts) {
     });
   });
 
-  describe('#mint', function () {
-    it('rewards sender and owner equally', async function () {
-      await Promise.all([1, 2, 3, 4, 5, 6, 7, 8].map(i => instance.scatter(DATA.slice(i * 32, (i + 1) * 32), web3.utils.toWei('2'), { from: OWNER })));
-
-      let initialBalanceContract = await scatter.balanceOf.call(instance.address);
-      let initialBalanceMinter = await scatter.balanceOf.call(NOBODY);
-      let initialBalanceOwner = await scatter.balanceOf.call(OWNER);
-
-      await instance.mint(1, { from: NOBODY });
-
-      let finalBalanceContract = await scatter.balanceOf.call(instance.address);
-      let finalBalanceMinter = await scatter.balanceOf.call(NOBODY);
-      let finalBalanceOwner = await scatter.balanceOf.call(OWNER);
-
-      let deltaBalanceContract = finalBalanceContract.sub(initialBalanceContract);
-      let deltaBalanceMinter = finalBalanceMinter.sub(initialBalanceMinter);
-      let deltaBalanceOwner = finalBalanceOwner.sub(initialBalanceOwner);
-
-      assert(!deltaBalanceContract.isNeg());
-      assert(deltaBalanceMinter.eq(deltaBalanceOwner));
-      assert(!deltaBalanceMinter.isZero());
-    });
-
-    it('accepts large input transaction count', async function () {
-      await truffleAssert.passes(
-        instance.mint(200)
-      );
-    });
-  });
-
   describe('#filter', function () {
     it('filters infected or inactive addresses', async function () {
       let filtered = await instance.filter.call(RECIPIENTS);

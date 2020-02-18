@@ -36,7 +36,7 @@ To distribute tokens to a filtered list of addresses:
 MNEMONIC="[MNEMONIC]" URL="https://mainnet.infura.io/v3/[INFURA_KEY]" GAS_PRICE="1e9" npx buidler run scripts/scatter.js --no-compile --network generic
 ```
 
-This script requires that the contract holds a balance of STT (~256 recommended).
+This script requires that the contract holds a balance of STT sufficient for scattering.
 
 The contract will execute transfers to itself if the contract's share of the reward pool is sufficient.
 
