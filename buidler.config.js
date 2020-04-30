@@ -11,9 +11,6 @@ module.exports = {
   },
 
   networks: {
-    ganache: {
-      url: 'http://127.0.0.1:8545',
-    },
     generic: {
       // set URL for external network, such as Infura
       url: `${ process.env.URL }`,

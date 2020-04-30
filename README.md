@@ -60,7 +60,7 @@ yarn install
 
 By default, Buidler uses the BuidlerEVM.
 
-To use Ganache append commands with `--network ganache`, after having started `ganache-cli` in a separate process:
+To use Ganache append commands with `--network localhost`, after having started `ganache-cli` in a separate process:
 
 ```bash
 npx ganache-cli
@@ -89,5 +89,5 @@ npx buidler test
 If using a supported network (such as Ganache), activate gas usage reporting by setting the `REPORT_GAS` environment variable to `true`:
 
 ```bash
-REPORT_GAS=true npx buidler test
+REPORT_GAS=true npx buidler test --network localhost
 ```
